@@ -17,33 +17,7 @@ use Illuminate\Support\Facades\Storage;
 class AuthAdminController extends Controller
 {
 
-    //  public function register(Request $request)
-    // {
-    //     $data = $request->validate([
-    //         'username' => 'required|string|unique:admins,username',
-    //         'name' => 'required|string',
-    //         'email' => 'required|string|email|unique:admins,email',
-    //         'phone' => 'required|string|unique:admins,phone',
-    //         'password' => 'required|string|min:8',
-    //         'image' => 'nullable|image|',
-    //         'role' => 'required|in:admin,supervisor,employee',
-    //         'permissions' => 'nullable|array',
-
-    //     ]);
-
-    //     if (!empty($data['password'])) {
-    //         $data['password'] = Hash::make($data['password']);
-    //     }
-    //     $user = Admin::create($data);
-
-    //     Mail::to($user->email)->send(new AuthMail($user->otp));
-
-    //     return ApiResponse::sendResponse(
-    //         true,
-    //         'Employee Created successfully',
-    //         new AdminResource($user)
-    //     );
-    // }
+   
     public function register(Request $request)
     {
         $data = $request->validate([
@@ -57,20 +31,16 @@ class AuthAdminController extends Controller
             'permissions' => 'nullable|array',
         ]);
 
-        // تحويل النصوص "true"/"false" لقيم Boolean حقيقية مع تنظيف اسم المفتاح
 
         if (! empty($data['permissions'])) {
             $allPermissions      = ["create_estimation", "price_estimation", "approve_estimation"];
             $data['permissions'] = Admin::normalizePermissions($data['permissions'], $allPermissions);
         }
 
-        // تشفير الباسورد
         $data['password'] = Hash::make($data['password']);
 
-        // إنشاء المستخدم
         $user = Admin::create($data);
 
-        // إرسال الإيميل
         Mail::to($user->email)->send(new AuthMail($user->otp));
 
         return ApiResponse::sendResponse(
@@ -105,155 +75,6 @@ class AuthAdminController extends Controller
         return ApiResponse::sendResponse(true, 'Admin updated successfully', new AdminResource($admin));
     }
 
-    //  public function index(Request $request)
-    // {
-
-    //     $perPage = $request->input('pageNum');
-
-    //     $query = Admin::query();
-
-    //     // if ($request->filled('name')) {
-    //     //     $query->where('name', 'LIKE', '%' . $request->name . '%');
-    //     // }
-
-    //     // $customers = $query->paginate($perPage); // عدد العناصر لكل صفحة
-    //     $column = $request->input('search');
-    //     $value = $request->input('value');
-
-    //     // تحديد الأعمدة المسموح البحث فيها
-    //     $allowedColumns = ['name', 'email', 'phone'];
-
-    //     if ($column && $value && in_array($column, $allowedColumns)) {
-    //         $query->where($column, 'LIKE', '%' . $value . '%');
-    //     }
-
-    //     $perPage = $request->input('pageNum', 10);
-
-    //     $employees = $query->paginate($perPage);
-    //     return ApiResponse::sendResponse(
-    //         true,
-    //         'Customers retrieved successfully',
-    //         $employees
-    //     );
-    // }
-// public function index(Request $request)
-// {
-//     $perPage = $request->input('pageNum', 10);
-
-    //     $query = Admin::query();
-
-    //     $column = $request->input('search');
-//     $value = $request->input('value');
-//     $allowedColumns = ['name', 'email', 'phone'];
-
-    //     if ($column && $value && in_array($column, $allowedColumns)) {
-//         $query->where($column, 'LIKE', '%' . $value . '%');
-//     }
-
-    //     $employees = $query->paginate($perPage);
-
-    //     $employees->getCollection()->transform(function ($admin) {
-//         // لو عندك الأعمدة permissions مخزنة كـ Array أو JSON في قاعدة البيانات
-//         $existingPermissions = is_array($admin->permissions)
-//             ? $admin->permissions
-//             : json_decode($admin->permissions, true);
-
-    //         if (!is_array($existingPermissions)) {
-//             $existingPermissions = [];
-//         }
-
-    //         // قائمة الصلاحيات الثابتة
-//         $allPermissions = ["create_estimation", "price_estimation", "approve_estimation"];
-
-    //         // نعمل الماب بحيث اللي موجود يبقى true والباقي false
-//         $permissionsMap = [];
-//         foreach ($allPermissions as $perm) {
-//             $permissionsMap[$perm] = in_array($perm, $existingPermissions);
-//         }
-
-    //         return [
-//             "id"       => $admin->id,
-//             "username" => $admin->username,
-//             "name"     => $admin->name,
-//             "email"    => $admin->email,
-//             "phone"    => $admin->phone,
-//             "password" => $admin->password,
-//             "image"    => $admin->image,
-//             "otp"      => $admin->otp,
-//             "role"     => $admin->role,
-//             "permissions" => $permissionsMap,
-//             "remember_token" => $admin->remember_token,
-//             "created_at"     => $admin->created_at,
-//             "updated_at"     => $admin->updated_at,
-//         ];
-//     });
-
-    //     return ApiResponse::sendResponse(
-//         true,
-//         'Customers retrieved successfully',
-//         $employees
-//     );
-// }
-
-    // public function index(Request $request)
-// {
-//     $perPage = $request->input('pageNum', 10);
-
-    //     $query = Admin::query();
-
-    //     $column = $request->input('search');
-//     $value = $request->input('value');
-//     $allowedColumns = ['name', 'email', 'phone'];
-
-    //     if ($column && $value && in_array($column, $allowedColumns)) {
-//         $query->where($column, 'LIKE', '%' . $value . '%');
-//     }
-
-    //     $employees = $query->paginate($perPage);
-
-    //     $employees->getCollection()->transform(function ($admin) {
-//         // قراءة permissions كـ array أو JSON
-//         $existingPermissions = is_array($admin->permissions)
-//             ? $admin->permissions
-//             : json_decode($admin->permissions, true);
-
-    //         if (!is_array($existingPermissions)) {
-//             $existingPermissions = [];
-//         }
-
-    //         // الصلاحيات الثابتة
-//         $allPermissions = ["create_estimation", "price_estimation", "approve_estimation"];
-
-    //         $permissionsMap = [];
-//         foreach ($allPermissions as $perm) {
-//             $permissionsMap[$perm] = isset($existingPermissions[$perm])
-//                 ? (bool) $existingPermissions[$perm]
-//                 : false;
-//         }
-
-    //         return [
-//             "id"       => $admin->id,
-//             "username" => $admin->username,
-//             "name"     => $admin->name,
-//             "email"    => $admin->email,
-//             "phone"    => $admin->phone,
-//             "password" => $admin->password,
-//             "image"    => $admin->image,
-//             "otp"      => $admin->otp,
-//             "role"     => $admin->role,
-//             "permissions" => $permissionsMap,
-//             "remember_token" => $admin->remember_token,
-//             "created_at"     => $admin->created_at,
-//             "updated_at"     => $admin->updated_at,
-//         ];
-//     });
-
-    //     return ApiResponse::sendResponse(
-//         true,
-//         'Customers retrieved successfully',
-//         $employees
-//     );
-// }
 
     public function index(Request $request)
     {
@@ -432,20 +253,16 @@ $employees->getCollection()->transform(function ($admin) use ($allPermissions) {
             $file = $request->file('image');
             $path = 'uploads/images/admins';
 
-            // 1- حذف الصورة القديمة لو موجودة
             if (! empty($user->image)) {
-                                                                           // الصورة القديمة متخزنة في DB زي: storage/uploads/images/admins/xxx.png
-                $oldImagePath = str_replace('storage/', '', $user->image); // عشان يوصل لـ storage/app/public
-
+                                                                          
+                $oldImagePath = str_replace('storage/', '', $user->image); 
                 if (Storage::disk('public')->exists($oldImagePath)) {
                     Storage::disk('public')->delete($oldImagePath);
                 }
             }
 
-            // 2- رفع الصورة الجديدة
             $uploadedFilePath = $file->store($path, 'public');
 
-            // 3- تخزين المسار في DB مع كلمة storage/ زي ما انت عاوز
             $data['image'] = 'storage/' . $uploadedFilePath;
         }
 
