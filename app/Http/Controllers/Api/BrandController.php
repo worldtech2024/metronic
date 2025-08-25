@@ -11,13 +11,7 @@ use App\Http\Controllers\Controller;
 
 class BrandController extends Controller
 {
-//   public function index(Request $request)
-//     {
-//         $perPage = $request->input('pageNum');
-//         $brands = Brand::paginate($perPage);
-        
-//         return ApiResponse::sendResponse(true, 'Brands retrieved successfully', $brands);
-//     }
+
 public function index(Request $request)
 {
     $perPage = $request->input('pageNum', 10);
